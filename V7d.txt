@@ -1,0 +1,85 @@
+using System;
+using System.IO;
+using System.Collections.Generic;
+using static System.Console;
+
+ 
+public interface V7
+{
+   bool Contains(Usuario u); 
+   bool Add(Usuario u); 
+   bool Remove (Usuario u); 
+   bool Replace (Usuario uOld, Usuario uNew);
+   Usuario [] toSortedArray();
+}
+
+public class Ins214Set: IIns214Set
+
+{
+    public int LimitElements {get;}
+    public int Buckets {get;}
+    
+    public Usuario [][] Set {get; set;}
+
+    public Ins214Set (int limite, int buckets, List <Usuario> user)
+    {
+        Buckets = buckets;
+        LimitElements = limite;
+
+        Set = new Usuario[Buckets][];
+
+        for (int i = 0; i < Buckets; i++)
+        {
+            Set [i] = new Usuario [LimitElements];
+        }
+
+        ToArray(user);
+    }
+    public bool Contains (Usuario u);
+    {
+        for (int 1 = 0; i < Buckets; i ++)
+        {
+            int minimo = 0, maximo = SetBufferSize [i].Lenght - 1;
+
+            do
+            {
+                int mid = (minimo + maximo)/ 2;
+
+                if (Set[i][mid] ! null)
+                {
+                    if (Set[i][mid].Cedula == u.Cedula) return true;
+                    else if (Set[i][mid].Cedula == u.Cedula && Set[i][mid].Apellido == u.Apellido) return true;
+                    else if (Set[i][mid].Apellido == u.Apellido && Set[i][mid].Cedula != u.Cedula) max -= 1;
+                    else if (u.CompareTo(Set[i][mid]) == -1) max = mid - 1;
+                    else minimo = mid + 1;
+                } else maximo -= 1;
+            }while (minimo <= maximo);
+        }
+    }   return false; 
+
+    public bool Replace (Usuario uOld, Usuario uNew)
+    {
+        if(Exists(uOld))
+        {
+            if (uOld.Equals(uNew))
+            {
+                if (Remove(uOld))
+                {
+                    if (Add(uNew)) 
+                    return true;
+                    else return false; 
+                }
+            }
+            else if (!Exists(uNew))
+            {
+                if (Remove(uOld))
+                {
+                    if (Add(uNew))
+                    return true;
+                    else return false; 
+                }
+            }
+        }
+    }
+    return false; 
+} 
