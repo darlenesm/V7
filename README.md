@@ -1,8 +1,6 @@
-# Registro de Datos v7.0.0 (OO: Identity, Categorization, and Comparison)
+# Registro de Datos v7.0.2 (OO: Identity, Categorization, and Comparison)
 
-[VIDEO](https://youtu.be/pnFqroX-yyU)
+[VIDEO VERSION 7.0.2](https://youtu.be/Cx5Mr6FzqzA)
 ___
 
-[Código](https://github.com/darlenesm/V7/blob/main/PROG.txt) 
 
-[Código](https://github.com/darlenesm/V7/blob/main/V7d.txt) 
