@@ -1,0 +1,484 @@
+﻿
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
+
+namespace volumen1
+{
+    class Program
+    {
+        static string ReadLastN(string text)
+        {
+            Console.Write(text);
+            var apellido = string.Empty;
+            ConsoleKey lastname;
+            do
+            {
+                var keyInfo = Console.ReadKey(intercept: true);
+                lastname = keyInfo.Key;
+                if (lastname == ConsoleKey.Backspace && apellido.Length > 0)
+                {
+                    Console.Write("\b \b");
+                    apellido = apellido[0..^1];
+                }
+                else if (lastname == ConsoleKey.Spacebar)
+                {
+                    Console.Write(keyInfo.KeyChar);
+                    apellido += keyInfo.KeyChar;
+                }
+                else if (char.IsLetter(keyInfo.KeyChar))
+                {
+                    Console.Write(keyInfo.KeyChar);
+                    apellido += keyInfo.KeyChar;
+                }
+            } while (lastname != ConsoleKey.Enter);
+            return apellido;
+        }
+
+        static string ReadName(string text)
+        {
+            Console.Write(text);
+            var name = string.Empty;
+            ConsoleKey key;
+            do
+            {
+                var keyInfo = Console.ReadKey(intercept: true);
+                key = keyInfo.Key;
+                if (key == ConsoleKey.Backspace && name.Length > 0)
+                {
+                    Console.Write("\b \b");
+                    name = name[0..^1];
+                }
+                else if (key == ConsoleKey.Spacebar)
+                {
+                    Console.Write(keyInfo.KeyChar);
+                    name += keyInfo.KeyChar;
+                }
+                else if (char.IsLetter(keyInfo.KeyChar))
+                {
+                    Console.Write(keyInfo.KeyChar);
+                    name += keyInfo.KeyChar;
+                }
+            } while (key != ConsoleKey.Enter);
+            return name;
+        }
+
+        static string ReadCedula(string text)
+        {
+            Console.Write(text);
+            while (true)
+            {
+                string data = "";
+                ConsoleKey key;
+
+                do
+                {
+                    var keyInfo = Console.ReadKey(intercept: true);
+                    key = keyInfo.Key;
+
+                    int value;
+                    bool success = int.TryParse(keyInfo.KeyChar.ToString(), out value);
+
+                    if (key == ConsoleKey.Backspace && data.Length > 0)
+                    {
+                        Console.Write("\b \b");
+                        data = data.Remove(data.Length - 1);
+                    }
+                    else if (!char.IsControl(keyInfo.KeyChar) && success)
+                    {
+                        Console.Write(keyInfo.KeyChar);
+                        data += keyInfo.KeyChar;
+                    }
+
+                } while (key != ConsoleKey.Enter);
+
+                if (data == "")
+                    continue;
+
+                return data;
+            }
+        }
+        static int ReadAge(string text)
+        {
+            Console.Write(text);
+            while (true)
+            {
+                string data = "";
+                ConsoleKey key;
+
+                do
+                {
+                    var keyInfo = Console.ReadKey(intercept: true);
+                    key = keyInfo.Key;
+
+                    int value;
+                    bool success = int.TryParse(keyInfo.KeyChar.ToString(), out value);
+
+                    if (key == ConsoleKey.Backspace && data.Length > 0)
+                    {
+                        Console.Write("\b \b");
+                        data = data.Remove(data.Length - 1);
+                    }
+                    else if (!char.IsControl(keyInfo.KeyChar) && success)
+                    {
+                        Console.Write(keyInfo.KeyChar);
+                        data += keyInfo.KeyChar;
+                    }
+                } while (key != ConsoleKey.Enter);
+
+                if (data == "")
+                    continue;
+
+                return int.Parse(data);
+            }
+
+        }
+        static int ReadMoney(string text)
+        {
+            Console.Write(text);
+            while (true)
+            {
+                string data = "";
+                ConsoleKey key;
+                int c = 0;
+
+                do
+                {
+                    var keyInfo = Console.ReadKey(intercept: true);
+                    key = keyInfo.Key;
+
+                    int value;
+                    bool success = int.TryParse(keyInfo.KeyChar.ToString(), out value) || (keyInfo.KeyChar == '.' && c == 0);
+
+                    if (keyInfo.KeyChar == '.')
+                        c++;
+
+                    if (key == ConsoleKey.Backspace && data.Length > 0)
+                    {
+                        Console.Write("\b \b");
+                        data = data.Remove(data.Length - 1);
+                    }
+                    else if (!char.IsControl(keyInfo.KeyChar) && success)
+                    {
+                        Console.Write(keyInfo.KeyChar);
+                        data += keyInfo.KeyChar;
+                    }
+                } while (key != ConsoleKey.Enter);
+
+                if (data == "")
+                    continue;
+
+                return int.Parse(data);
+            }
+
+        }
+
+
+        static string ReadPassword(string text)
+        {
+            Console.Write(text);
+
+            while (true)
+            {
+                string password = "";
+                ConsoleKey key;
+
+                do
+                {
+                    var keyInfo = Console.ReadKey(intercept: true);
+                    key = keyInfo.Key;
+
+                    if (key == ConsoleKey.Backspace && password.Length > 0)
+                    {
+                        Console.Write("\b \b");
+                        password = password.Remove(password.Length - 1);
+                    }
+                    else if (!char.IsControl(keyInfo.KeyChar))
+                    {
+                        Console.Write("*");
+                        password += keyInfo.KeyChar;
+                    }
+                } while (key != ConsoleKey.Enter);
+
+                if (password == "")
+                    continue;
+
+                return password;
+            }
+
+        }
+
+        public class Usuario
+        {
+
+
+            public string Cedula { get; set; }
+            public string Nombre { get; set; }
+            public string Apellido { get; set; }
+            public int Ahorros { get; set; }
+            public string Password { get; set; }
+
+
+
+            public Usuario(string password, string cedula, string nombre, string apellido, int ahorros)
+            {
+                Cedula = cedula;
+                Nombre = nombre;
+                Apellido = apellido;
+                Ahorros = ahorros;
+                Password = password;
+
+            }
+        }
+        public class datacsv
+        {
+            public List<Usuario> users;
+            public string files;
+            public datacsv(string files)
+            {
+                users = new List<Usuario>();
+                this.files = files;
+            }
+            public void Adduser(string password, string cedula, string nombre, string apellido, int ahorros)
+            {
+                Usuario u = new Usuario(password, cedula, nombre, apellido, ahorros);
+                users.Add(u);
+            }
+
+            public void Guardar()
+            {
+                using (StreamWriter es = new StreamWriter(files))
+                {
+                    es.WriteLine("Password,Cedula,Nombre,Apellido,Ahorros");
+                    foreach (Usuario s in users)
+                    {
+                        string[] datos = { s.Password, s.Cedula, s.Nombre, s.Apellido, s.Ahorros.ToString() };
+                        string linea = string.Join(",", datos);
+                        es.WriteLine(linea);
+                        for (int i = 0; i < (datos.Length - 1); i++)
+                        {
+                            if (string.Compare(datos[i], datos[i + 1]) < 0)
+                            {
+                                linea = datos[i];
+                                datos[i] = datos[i + 1];
+                                datos[i + 1] = linea;
+                                es.Write(linea);
+                            }
+                        }
+
+                        Dictionary<string, int> inf = new Dictionary<string, int>();
+                        using (StreamReader v7 = new StreamReader("C:/Users/darle/OneDrive/Escritorio/PRUEBAS HASHSET/v7.csv"))
+                        {
+                            string line;
+                            while ((line = v7.ReadLine()) != null)
+                            {
+                                object[] mySplit = line.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                                string name = mySplit[0].ToString();
+                                int lna = Convert.ToInt32(mySplit[1]);
+
+                                if (inf.ContainsKey(name))
+                                    inf = inf.ToDictionary(x => x.Key, x => x.Key == name ? x.Value + lna : x.Value);
+                                else
+                                    inf.Add(name, lna);
+                            }
+                        }
+                    }
+                    es.Flush();
+
+
+                }
+            }
+
+            public void Buscar(string bced)
+            {
+                var ln = File.ReadLines(files);
+                foreach (var linea in ln)
+                {
+                    if (linea.Split(',')[0].Contains(bced))
+                    {
+                        Console.WriteLine(linea);
+                    }
+                }
+            }
+
+            public void Lista()
+            {
+                var lines = File.ReadLines(files);
+                foreach (var linea in lines)
+                {
+                    Console.WriteLine(linea);
+
+                }
+            }
+            static int ToBits(int edade, char genero, char estado, char grado)
+            {
+                int datosb = edade << 4;
+                if (genero == 'F') datosb = datosb | 8;
+                if (estado == 'C') datosb = datosb | 4;
+                if (grado == 'M') datosb = datosb | 1;
+                else if (grado == 'G') datosb = datosb | 2;
+                else if (grado == 'P') datosb = datosb | 3;
+
+                return datosb;
+            }
+
+
+            static void Main(string[] args)
+            {
+                string guardardatos;
+                datacsv csv = new datacsv("C:/Users/darle/OneDrive/Escritorio/PRUEBAS HASHSET/v7.csv");
+                do
+                {
+                    Console.WriteLine("Elige una opcion: ");
+                    Console.WriteLine("\n1. Agregar datos \n2. Buscar datos \n3. Lista de datos \n4. Editar \n5. Eliminar");
+                    int menu = Int32.Parse(Console.ReadLine());
+                    switch (menu)
+                    {
+                        case 1:
+                            Console.WriteLine("Ingrese: ");
+                            string pass = ReadPassword("\nPassword: ");
+                            string ced = ReadCedula("\nCedula: ");
+                            string name = ReadName("\nNombre: ");
+                            string apell = ReadLastN("\nApellido: ");
+                            int money = ReadMoney("\nAhorros:");
+                            Console.WriteLine("\nEdad: ");
+                            int edade = int.Parse(Console.ReadLine());
+
+                            Console.WriteLine("Genero: ");
+                            char genero = Convert.ToChar(Console.ReadLine().ToUpper());
+
+                            Console.WriteLine("Estado: ");
+                            char estado = Convert.ToChar(Console.ReadLine().ToUpper());
+
+                            Console.WriteLine("Grado: ");
+                            char grado = Convert.ToChar(Console.ReadLine().ToUpper());
+                            Console.WriteLine(ToBits(edade, genero, estado, grado));
+                            csv.Adduser(pass, ced, name, apell, money);
+                            Console.WriteLine(" ");
+
+                            csv.Guardar();
+                            break;
+
+                        case 2:
+                            Console.WriteLine("Cedula: ");
+                            csv.Buscar(Console.ReadLine());
+                            break;
+
+                        case 3:
+                            csv.Lista();
+                            break;
+
+                        case 4:
+                            Console.Write("Introduzca la cedula del registro que desea modificar: ");
+                            string lol = Console.ReadLine();
+
+
+                            var lines = File.ReadAllLines("C:/Users/darle/OneDrive/Escritorio/PRUEBAS HASHSET/v7.csv");
+                            var HashSet = new HashSet<string>(lines);
+                            File.WriteAllLines("C:/Users/darle/OneDrive/Escritorio/PRUEBAS HASHSET/v7.csv", HashSet.ToList());
+
+                            foreach (var linea in lines)
+                            {
+                                var ln = File.ReadLines(csv.files);
+
+
+                                if (linea.Split(',')[0].Contains(lol))
+                                {
+                                    Console.WriteLine(linea);
+                                }
+                                else
+                                {
+                                M:
+                                    Console.Write("Nueva cedula: ");
+                                    ced = Console.ReadLine();
+                                    lines = File.ReadAllLines(csv.files);
+                                    foreach (var line in lines)
+                                    {
+                                        var value = line.Split(',');
+                                        if (ced == value[0] && ced != lol)
+                                        {
+                                            Console.WriteLine("La cedula introducida está en uso");
+                                            goto M;
+                                        }
+
+                                    }
+                                    Console.Write("Nuevos nombres: ");
+                                    name = Console.ReadLine();
+                                    Console.Write("Nuevos apellidos: ");
+                                    apell = Console.ReadLine();
+                                    Console.Write("Nueva edad: ");
+
+
+                                    lines[0] = (ced + "," + name + "," + apell + ",");
+
+                                    TextWriter write = new StreamWriter(csv.files);
+                                    write.Close();
+
+                                    write = new StreamWriter(csv.files);
+
+                                    foreach (var line in lines)
+                                    {
+                                        write.WriteLine(line);
+                                    }
+                                    Console.WriteLine("El registro se modificó correctamente");
+                                    write.Close();
+
+
+                                }
+
+
+                            }
+                            break;
+
+                        case 5:
+                            File.Delete("C:/Users/darle/OneDrive/Escritorio/PRUEBAS HASHSET/v7.csv");
+                            Console.WriteLine("El archivo ha sido eliminado con exito");
+                            Console.ReadKey();
+                            break;
+
+
+                    }
+                    Console.WriteLine("¿Quieres continuar? Si/No");
+                    guardardatos = Console.ReadLine().ToLower();
+                }
+                while (guardardatos == "Si");
+
+
+
+                String[] lx = File.ReadAllLines("C:/Users/darle/OneDrive/Escritorio/PRUEBAS HASHSET/v7.csv");
+                Dictionary<String, Int32> rds = new Dictionary<String, Int32>();
+                foreach (String rd in lx)
+                {
+                    String[] split = rd.Split(',');
+                    if (rds.ContainsKey(split[0]))
+                    {
+                        foreach (KeyValuePair<String, Int32> v in rds)
+                        {
+                            if (v.Key == split[0])
+                            {
+                                rds[split[0]] += Convert.ToInt32(split[1]);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (split.Length > 1)
+                            rds.Add(split[0], Convert.ToInt32(split[1]));
+                    }
+                }
+
+
+                var sorted = (from entry in rds orderby entry.Value descending select entry);
+
+
+                foreach (KeyValuePair<String, Int32> v in sorted)
+                    Console.ReadKey();
+            }
+        }
+    }
+
+}
+
